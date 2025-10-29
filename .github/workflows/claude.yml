@@ -13,10 +13,10 @@ on:
 jobs:
   claude:
     if: |
-      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude')) ||
-      (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@claude')) ||
-      (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@claude')) ||
-      (github.event_name == 'issues' && (contains(github.event.issue.body, '@claude') || contains(github.event.issue.title, '@claude')))
+      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '/jd')) ||
+      (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '/jd')) ||
+      (github.event_name == 'pull_request_review' && contains(github.event.review.body, '/jd')) ||
+      (github.event_name == 'issues' && (contains(github.event.issue.body, '/jd') || contains(github.event.issue.title, '/jd')))
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -25,6 +25,13 @@ jobs:
       id-token: write
       actions: read # Required for Claude to read CI results on PRs
     steps:
+      - name: Initialize custom bot
+        id: bot
+        uses: starburst997/custom-bot-init@v1
+        with:
+          app-id: ${{ secrets.BOT_ID }}
+          private-key: ${{ secrets.BOT_KEY }}
+
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
@@ -34,11 +41,22 @@ jobs:
         id: claude
         uses: anthropics/claude-code-action@v1
         with:
+          github_token: ${{ steps.bot.outputs.token }}
+          bot_id: ${{ steps.bot.outputs.user-id }}
+          bot_name: ${{ steps.bot.outputs.name }}
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          allowed_bots: ${{ steps.bot.outputs.slug }}
+          plugin_marketplaces: https://github.com/starburst997/claude.git
+          plugins: common@jd
+          trigger_phrase: "/jd"
+          branch_prefix: "jd/"
+          #assignee_trigger: "@${{ steps.bot.outputs.slug }}"
+          #label_trigger: ${{ steps.bot.outputs.slug }}
 
           # This is an optional setting that allows Claude to read CI results on PRs
-          additional_permissions: |
-            actions: read
+          #use_commit_signing: true
+          #additional_permissions: |
+          #  actions: read
 
           # Optional: Give a custom prompt to Claude. If this is not specified, Claude will perform the instructions specified in the comment that tagged it.
           # prompt: 'Update the pull request description to include a summary of changes.'
@@ -46,5 +64,4 @@ jobs:
           # Optional: Add claude_args to customize behavior and configuration
           # See https://github.com/anthropics/claude-code-action/blob/main/docs/usage.md
           # or https://docs.claude.com/en/docs/claude-code/cli-reference for available options
-          # claude_args: '--allowed-tools Bash(gh pr:*)'
-
+          claude_args: '--allowed-tools "Bash(gh issue view:*),Bash(gh search:*),Bash(gh issue list:*),Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash(gh pr list:*),WebSearch,WebFetch(domain:github.com),WebFetch(domain:*),Bash(mkdir:*),Bash(chmod:*)"'

@@ -26,6 +26,13 @@ jobs:
       id-token: write
 
     steps:
+      - name: Initialize custom bot
+        id: bot
+        uses: starburst997/custom-bot-init@v1
+        with:
+          app-id: ${{ secrets.BOT_ID }}
+          private-key: ${{ secrets.BOT_KEY }}
+
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
@@ -35,7 +42,6 @@ jobs:
         id: claude-review
         uses: anthropics/claude-code-action@v1
         with:
-          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           prompt: |
             REPO: ${{ github.repository }}
             PR NUMBER: ${{ github.event.pull_request.number }}
@@ -53,5 +59,16 @@ jobs:
 
           # See https://github.com/anthropics/claude-code-action/blob/main/docs/usage.md
           # or https://docs.claude.com/en/docs/claude-code/cli-reference for available options
-          claude_args: '--allowed-tools "Bash(gh issue view:*),Bash(gh search:*),Bash(gh issue list:*),Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash(gh pr list:*)"'
+          claude_args: '--allowed-tools "Bash(gh issue view:*),Bash(gh search:*),Bash(gh issue list:*),Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash(gh pr list:*),WebSearch,WebFetch(domain:github.com),WebFetch(domain:*),Bash(mkdir:*),Bash(chmod:*)"'
 
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          github_token: ${{ steps.bot.outputs.token }}
+          bot_id: ${{ steps.bot.outputs.user-id }}
+          bot_name: ${{ steps.bot.outputs.name }}
+          allowed_bots: ${{ steps.bot.outputs.slug }}
+          plugin_marketplaces: https://github.com/starburst997/claude.git
+          plugins: common@jd
+          trigger_phrase: "/jd"
+          branch_prefix: "jd/"
+          #assignee_trigger: "@${{ steps.bot.outputs.slug }}"
+          #label_trigger: ${{ steps.bot.outputs.slug }}
