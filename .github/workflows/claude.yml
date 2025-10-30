@@ -1,6 +1,39 @@
 name: Claude Code
 
 on:
+  workflow_call:
+    inputs:
+      trigger_phrase:
+        description: 'The trigger phrase to activate Claude'
+        required: false
+        type: string
+        default: '/jd'
+      branch_prefix:
+        description: 'Prefix for created branches'
+        required: false
+        type: string
+        default: 'jd/'
+      plugins:
+        description: 'Plugins to load'
+        required: false
+        type: string
+        default: 'common@jd'
+      allowed_bots:
+        description: 'Allowed bot slugs'
+        required: false
+        type: string
+      plugin_marketplaces:
+        description: 'Plugin marketplace URLs'
+        required: false
+        type: string
+        default: 'https://github.com/starburst997/claude.git'
+    secrets:
+      BOT_ID:
+        required: true
+      BOT_KEY:
+        required: true
+      CLAUDE_CODE_OAUTH_TOKEN:
+        required: true
   issue_comment:
     types: [created]
   pull_request_review_comment:
@@ -82,11 +115,11 @@ jobs:
           bot_id: ${{ secrets.BOT_ID }}
           bot_name: ${{ steps.bot.outputs.name }}
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          allowed_bots: ${{ steps.bot.outputs.slug }}
-          plugin_marketplaces: https://github.com/starburst997/claude.git
-          plugins: common@jd
-          trigger_phrase: "/jd"
-          branch_prefix: "jd/"
+          allowed_bots: ${{ inputs.allowed_bots || steps.bot.outputs.slug }}
+          plugin_marketplaces: ${{ inputs.plugin_marketplaces || 'https://github.com/starburst997/claude.git' }}
+          plugins: ${{ inputs.plugins || 'common@jd' }}
+          trigger_phrase: ${{ inputs.trigger_phrase || '/jd' }}
+          branch_prefix: ${{ inputs.branch_prefix || 'jd/' }}
           assignee_trigger: "@${{ steps.bot.outputs.slug }}"
           label_trigger: jd
           use_commit_signing: true

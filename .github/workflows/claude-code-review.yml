@@ -1,6 +1,39 @@
 name: Claude Code Review
 
 on:
+  workflow_call:
+    inputs:
+      pr_number:
+        description: 'Pull request number to review'
+        required: false
+        type: number
+      plugins:
+        description: 'Plugins to load'
+        required: false
+        type: string
+        default: 'common@jd'
+      plugin_marketplaces:
+        description: 'Plugin marketplace URLs'
+        required: false
+        type: string
+        default: 'https://github.com/starburst997/claude.git'
+      trigger_phrase:
+        description: 'The trigger phrase to activate Claude'
+        required: false
+        type: string
+        default: '/jd'
+      branch_prefix:
+        description: 'Prefix for created branches'
+        required: false
+        type: string
+        default: 'jd/'
+    secrets:
+      BOT_ID:
+        required: true
+      BOT_KEY:
+        required: true
+      CLAUDE_CODE_OAUTH_TOKEN:
+        required: true
   pull_request:
     types: [opened, synchronize]
     # Optional: Only run on specific file changes
@@ -45,7 +78,7 @@ jobs:
         with:
           prompt: |
             REPO: ${{ github.repository }}
-            PR NUMBER: ${{ github.event.pull_request.number }}
+            PR NUMBER: ${{ inputs.pr_number || github.event.pull_request.number }}
 
             Please review this pull request and provide feedback on:
             - Code quality and best practices
@@ -69,10 +102,10 @@ jobs:
           bot_id: ${{ secrets.BOT_ID }}
           bot_name: ${{ steps.bot.outputs.name }}
           allowed_bots: ${{ steps.bot.outputs.slug }}
-          plugin_marketplaces: https://github.com/starburst997/claude.git
-          plugins: common@jd
-          trigger_phrase: "/jd"
-          branch_prefix: "jd/"
+          plugin_marketplaces: ${{ inputs.plugin_marketplaces || 'https://github.com/starburst997/claude.git' }}
+          plugins: ${{ inputs.plugins || 'common@jd' }}
+          trigger_phrase: ${{ inputs.trigger_phrase || '/jd' }}
+          branch_prefix: ${{ inputs.branch_prefix || 'jd/' }}
           assignee_trigger: "@${{ steps.bot.outputs.slug }}"
           label_trigger: jd
           use_commit_signing: true
