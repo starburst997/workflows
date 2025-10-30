@@ -121,16 +121,22 @@ jobs:
 
       - name: Detect and normalize trigger phrase
         id: trigger_phrase
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          COMMENT_BODY: ${{ github.event.comment.body }}
+          REVIEW_BODY: ${{ github.event.review.body }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
         run: |
           # Get the relevant text body based on event type
-          if [ "${{ github.event_name }}" == "issue_comment" ]; then
-            TEXT_BODY="${{ github.event.comment.body }}"
-          elif [ "${{ github.event_name }}" == "pull_request_review_comment" ]; then
-            TEXT_BODY="${{ github.event.comment.body }}"
-          elif [ "${{ github.event_name }}" == "pull_request_review" ]; then
-            TEXT_BODY="${{ github.event.review.body }}"
-          elif [ "${{ github.event_name }}" == "issues" ]; then
-            TEXT_BODY="${{ github.event.issue.body }} ${{ github.event.issue.title }}"
+          if [ "$EVENT_NAME" == "issue_comment" ]; then
+            TEXT_BODY="$COMMENT_BODY"
+          elif [ "$EVENT_NAME" == "pull_request_review_comment" ]; then
+            TEXT_BODY="$COMMENT_BODY"
+          elif [ "$EVENT_NAME" == "pull_request_review" ]; then
+            TEXT_BODY="$REVIEW_BODY"
+          elif [ "$EVENT_NAME" == "issues" ]; then
+            TEXT_BODY="$ISSUE_BODY $ISSUE_TITLE"
           else
             TEXT_BODY=""
           fi
