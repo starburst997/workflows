@@ -107,16 +107,16 @@ jobs:
             echo "❓ Triggered from an unknown source"
           fi
 
-      - name: Determine prompt
-        id: determine_prompt
-        run: |
-          if [ "${{ steps.detect_source.outputs.source }}" == "issue_comment" ] || [ "${{ steps.detect_source.outputs.source }}" == "issue" ]; then
-            echo "prompt=/common:issue" >> $GITHUB_OUTPUT
-            echo "📝 Using /common:issue prompt"
-          else
-            echo "prompt=" >> $GITHUB_OUTPUT
-            echo "📝 Using default prompt (from trigger comment)"
-          fi
+      #- name: Determine prompt
+      #  id: determine_prompt
+      #  run: |
+      #    if [ "${{ steps.detect_source.outputs.source }}" == "issue_comment" ] || [ "${{ steps.detect_source.outputs.source }}" == "issue" ]; then
+      #      echo "prompt=/common:issue" >> $GITHUB_OUTPUT
+      #      echo "📝 Using /common:issue prompt"
+      #    else
+      #      echo "prompt=" >> $GITHUB_OUTPUT
+      #      echo "📝 Using default prompt (from trigger comment)"
+      #    fi
 
       - name: Run Claude Code
         id: claude

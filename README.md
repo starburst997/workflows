@@ -9,14 +9,17 @@ This repository contains reusable GitHub Actions workflows for automating common
 Automates issue and PR management using Claude AI.
 
 **Triggers:**
+
 - `workflow_call` - Can be called from other workflows
 - Issue comments, PR review comments, and PR reviews containing `/jd`
 - Issues opened, assigned, or labeled with `jd`
 
 **Required Secrets:**
+
 - `CLAUDE_CODE_OAUTH_TOKEN` - Claude Code OAuth token for authentication
 
 **Optional Secrets:**
+
 - `BOT_ID` - GitHub App ID for custom bot
 - `BOT_KEY` - GitHub App private key for custom bot
 
@@ -46,13 +49,16 @@ jobs:
 Automatically reviews pull requests using Claude AI.
 
 **Triggers:**
+
 - `workflow_call` - Can be called from other workflows
 - Pull requests opened or marked ready for review
 
 **Required Secrets:**
+
 - `CLAUDE_CODE_OAUTH_TOKEN` - Claude Code OAuth token for authentication
 
 **Optional Secrets:**
+
 - `BOT_ID` - GitHub App ID for custom bot
 - `BOT_KEY` - GitHub App private key for custom bot
 
@@ -71,11 +77,74 @@ jobs:
     secrets: inherit
 ```
 
+### 3. GitHub Pages Deployment (`gh-pages.yaml`)
+
+Automatically deploys documentation from the `docs/` directory to GitHub Pages.
+
+**Triggers:**
+
+- `workflow_call` - Can be called from other workflows
+- Push to main branch when `docs/**` files change
+
+**Optional Secrets:**
+
+- `BOT_ID` - GitHub App ID for custom bot
+- `BOT_KEY` - GitHub App private key for custom bot
+
+**Example Usage:**
+
+```yaml
+name: Deploy Docs
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "docs/**"
+
+jobs:
+  deploy:
+    uses: starburst997/workflows/.github/workflows/gh-pages.yaml@main
+    secrets: inherit
+```
+
+### 4. Automated Release (`release.yml`)
+
+Automatically creates releases with version bumping and changelog generation.
+
+**Triggers:**
+
+- `workflow_call` - Can be called from other workflows
+- Push to main branch
+
+**Optional Secrets:**
+
+- `BOT_ID` - GitHub App ID for custom bot
+- `BOT_KEY` - GitHub App private key for custom bot
+
+**Example Usage:**
+
+```yaml
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  release:
+    uses: starburst997/workflows/.github/workflows/release.yml@main
+    secrets: inherit
+```
+
 ## Setup
 
 To use these workflows in your repository:
 
 1. Add the required secrets to your repository settings:
+
    - `CLAUDE_CODE_OAUTH_TOKEN` - Obtain from Claude Code
    - `BOT_ID` and `BOT_KEY` (optional) - For custom GitHub App integration
 
