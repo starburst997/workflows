@@ -183,7 +183,8 @@ jobs:
         if: |
           steps.detect_source.outputs.source == 'issue_comment' ||
           steps.detect_source.outputs.source == 'issue' ||
-          steps.detect_source.outputs.source == 'pr_review_comment'
+          steps.detect_source.outputs.source == 'pr_review_comment' ||
+          steps.detect_source.outputs.source == 'pr_review'
         id: find_comment
         uses: starburst997/find-comment@v3
         with:
