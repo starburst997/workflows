@@ -178,7 +178,8 @@ jobs:
             sed -E "s/@${BOT_SLUG}\[bot\]'s task/the task/g" | \
             sed -E 's/ • \[Create PR ➔\]\([^)]+\)//g' | \
             perl -0777 -pe 's/\n---\s*\n\[Branch: [^\]]+\]\([^\)]+\)\s*\|?\s*$//gs' | \
-            perl -0777 -pe 's/\n---\s*$//gs' > processed_comment.txt
+            perl -0777 -pe 's/\n---\s*$//gs' | \
+            perl -0777 -pe 's/\n---\s*•\s*$//gs' > processed_comment.txt
 
           # Set the processed body as output (using EOF to handle multiline)
           echo "body<<EOF" >> $GITHUB_OUTPUT
