@@ -63,6 +63,17 @@ jobs:
             echo "❓ Triggered from an unknown source"
           fi
 
+      - name: Determine prompt
+        id: determine_prompt
+        run: |
+          if [ "${{ steps.detect_source.outputs.source }}" == "issue_comment" ] || [ "${{ steps.detect_source.outputs.source }}" == "issue" ]; then
+            echo "prompt=/common:issue" >> $GITHUB_OUTPUT
+            echo "📝 Using /common:issue prompt"
+          else
+            echo "prompt=" >> $GITHUB_OUTPUT
+            echo "📝 Using default prompt (from trigger comment)"
+          fi
+
       - name: Run Claude Code
         id: claude
         uses: anthropics/claude-code-action@v1
@@ -79,13 +90,11 @@ jobs:
           assignee_trigger: "@${{ steps.bot.outputs.slug }}"
           label_trigger: jd
           use_commit_signing: true
+          prompt: ${{ steps.determine_prompt.outputs.prompt }}
 
           # This is an optional setting that allows Claude to read CI results on PRs
           #additional_permissions: |
           #  actions: read
-
-          # Optional: Give a custom prompt to Claude. If this is not specified, Claude will perform the instructions specified in the comment that tagged it.
-          # prompt: 'Update the pull request description to include a summary of changes.'
 
           # Optional: Add claude_args to customize behavior and configuration
           # See https://github.com/anthropics/claude-code-action/blob/main/docs/usage.md
