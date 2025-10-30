@@ -6,17 +6,47 @@ on:
   pull_request_review_comment:
     types: [created]
   issues:
-    types: [opened, assigned]
+    types: [opened, assigned, labeled]
   pull_request_review:
     types: [submitted]
 
 jobs:
+  # Special job that only adds a comment when the JD label is added
+  label-comment:
+    if: |
+      github.event_name == 'issues' &&
+      github.event.action == 'labeled' &&
+      github.event.label.name == 'jd' &&
+      (github.event.sender.login == github.repository_owner || github.event.sender.login == 'jd-botvin[bot]')
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: Initialize custom bot
+        id: bot
+        uses: starburst997/custom-bot-init@v1
+        with:
+          app-id: ${{ secrets.BOT_ID }}
+          private-key: ${{ secrets.BOT_KEY }}
+
+      - name: Add comment to trigger JD
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ steps.bot.outputs.token }}
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: '/jd call command /common:issue'
+            });
+
   claude:
     if: |
-      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '/jd')) ||
-      (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '/jd')) ||
-      (github.event_name == 'pull_request_review' && contains(github.event.review.body, '/jd')) ||
-      (github.event_name == 'issues' && (contains(github.event.issue.body, '/jd') || contains(github.event.issue.title, '/jd')))
+      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '/jd') && (github.event.sender.login == github.repository_owner || github.event.sender.login == 'jd-botvin[bot]')) ||
+      (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '/jd') && (github.event.sender.login == github.repository_owner || github.event.sender.login == 'jd-botvin[bot]')) ||
+      (github.event_name == 'pull_request_review' && contains(github.event.review.body, '/jd') && (github.event.sender.login == github.repository_owner || github.event.sender.login == 'jd-botvin[bot]')) ||
+      (github.event_name == 'issues' && github.event.action != 'labeled' && (contains(github.event.issue.body, '/jd') || contains(github.event.issue.title, '/jd')) && (github.event.sender.login == github.repository_owner || github.event.sender.login == 'jd-botvin[bot]'))
     runs-on: ubuntu-latest
     timeout-minutes: 20
     permissions:
