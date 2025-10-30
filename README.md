@@ -94,7 +94,7 @@ Automatically deploys documentation from the `docs/` directory to GitHub Pages.
 **Example Usage:**
 
 ```yaml
-name: Deploy Docs
+name: Github Pages
 
 on:
   push:
