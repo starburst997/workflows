@@ -118,6 +118,10 @@ Automatically creates releases with version bumping and changelog generation.
 - `workflow_call` - Can be called from other workflows
 - Push to main branch
 
+**Optional Inputs:**
+
+- `update-major-minor` - Update major and minor version tags (default: `true`)
+
 **Optional Secrets:**
 
 - `BOT_ID` - GitHub App ID for custom bot
@@ -136,6 +140,8 @@ on:
 jobs:
   release:
     uses: starburst997/workflows/.github/workflows/release.yml@v1
+    with:
+      update-major-minor: true # Optional, defaults to true
     secrets: inherit
 ```
 

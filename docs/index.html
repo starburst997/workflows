@@ -550,7 +550,8 @@
             <h3>4. Automated Release</h3>
             <p>
               Semantic versioning with automatic changelog generation. Creates
-              releases and tags on every push to your main branch.
+              releases and tags on every push to your main branch. Optionally
+              updates major and minor version tags.
             </p>
             <div class="code-block">
               <pre><code><span class="yaml-key">name:</span> <span class="yaml-string">Release</span>
@@ -562,6 +563,8 @@
 <span class="yaml-key">jobs:</span>
   <span class="yaml-key">release:</span>
     <span class="yaml-key">uses:</span> <span class="yaml-string">starburst997/workflows/.github/workflows/release.yml@v1</span>
+    <span class="yaml-key">with:</span>
+      <span class="yaml-key">update-major-minor:</span> <span class="yaml-value">true</span>  <span class="yaml-comment"># Optional, defaults to true</span>
     <span class="yaml-key">secrets:</span> <span class="yaml-value">inherit</span></code></pre>
             </div>
           </div>
@@ -600,6 +603,24 @@
             <p>
               GitHub App private key for custom bot integration. Must be
               provided together with BOT_ID for custom bot functionality.
+            </p>
+          </div>
+        </div>
+
+        <h2 class="section-title" style="margin-top: 4rem">Workflow Inputs</h2>
+        <p class="section-subtitle">Optional configuration for workflows</p>
+
+        <div class="secrets-grid" style="margin-top: 2rem">
+          <div class="secret-card">
+            <h3>update-major-minor</h3>
+            <span class="secret-badge optional">Optional</span>
+            <p>
+              <strong>Workflow:</strong> Release<br />
+              <strong>Type:</strong> boolean<br />
+              <strong>Default:</strong> true<br /><br />
+              Update major and minor version tags when creating releases. When
+              enabled, creates or updates tags like v1 and v1.2 in addition to the
+              full semantic version tag v1.2.3.
             </p>
           </div>
         </div>

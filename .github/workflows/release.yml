@@ -2,6 +2,12 @@ name: Release
 
 on:
   workflow_call:
+    inputs:
+      update-major-minor:
+        description: "Update major and minor version tags"
+        type: boolean
+        required: false
+        default: true
     secrets:
       BOT_ID:
         description: "GitHub App ID for custom bot"
@@ -36,7 +42,7 @@ jobs:
         uses: starburst997/auto-version@v1
         with:
           token: ${{ steps.bot.outputs.token }}
-          update-major-minor: true
+          update-major-minor: ${{ inputs.update-major-minor || true }}
 
       - name: Generate changelog and create release
         uses: starburst997/commits-logs@v1
