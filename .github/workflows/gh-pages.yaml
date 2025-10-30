@@ -82,22 +82,44 @@ jobs:
         env:
           GH_TOKEN: ${{ steps.bot.outputs.token }}
         run: |
-          # Get OIDC token
+          echo "Getting OIDC token..."
           OIDC_TOKEN=$(curl -sS -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
-            "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=github-pages" | jq -r '.value')
+            "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=github-pages" | jq -r '.value')
 
-          # Create Pages deployment
+          if [ -z "$OIDC_TOKEN" ] || [ "$OIDC_TOKEN" = "null" ]; then
+            echo "Error: Failed to get OIDC token"
+            exit 1
+          fi
+          echo "OIDC token obtained (first 20 chars): ${OIDC_TOKEN:0:20}..."
+
+          echo "Building deployment payload..."
+          PAYLOAD=$(jq -n \
+            --argjson artifact_id "${{ steps.artifact.outputs.artifact_id }}" \
+            --arg pages_build_version "${{ github.sha }}" \
+            --arg oidc_token "$OIDC_TOKEN" \
+            '{artifact_id: $artifact_id, pages_build_version: $pages_build_version, oidc_token: $oidc_token}')
+
+          echo "Payload:"
+          echo "$PAYLOAD" | jq '.'
+
+          echo "Creating Pages deployment..."
           RESPONSE=$(gh api \
             --method POST \
             -H "Accept: application/vnd.github+json" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
             /repos/${{ github.repository }}/pages/deployments \
-            -f artifact_id="${{ steps.artifact.outputs.artifact_id }}" \
-            -f pages_build_version="${{ github.sha }}" \
-            -f oidc_token="$OIDC_TOKEN")
+            --input - <<< "$PAYLOAD")
+
+          echo "Deployment response:"
+          echo "$RESPONSE" | jq '.'
 
           DEPLOYMENT_ID=$(echo "$RESPONSE" | jq -r '.id')
           PAGE_URL=$(echo "$RESPONSE" | jq -r '.page_url')
+
+          if [ -z "$DEPLOYMENT_ID" ] || [ "$DEPLOYMENT_ID" = "null" ]; then
+            echo "Error: Failed to create deployment"
+            exit 1
+          fi
 
           echo "page_url=$PAGE_URL" >> $GITHUB_OUTPUT
           echo "Deployment ID: $DEPLOYMENT_ID"
