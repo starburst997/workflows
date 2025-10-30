@@ -21,6 +21,11 @@ on:
   pull_request_review:
     types: [submitted]
 
+# Permissions are optional if using a GitHub App bot (BOT_ID/BOT_KEY)
+# Uncomment if using GITHUB_TOKEN:
+# permissions:
+#   issues: write
+
 jobs:
   # Special job that only adds a comment when the JD label is added
   label-comment:
@@ -30,8 +35,6 @@ jobs:
       github.event.label.name == 'jd' &&
       (github.event.sender.login == github.repository_owner || github.event.sender.login == 'jd-botvin[bot]')
     runs-on: ubuntu-latest
-    permissions:
-      issues: write
     steps:
       - name: Initialize custom bot
         id: bot
@@ -63,12 +66,14 @@ jobs:
       )
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    permissions:
-      contents: read
-      pull-requests: read
-      issues: read
-      id-token: write
-      actions: write
+    # Permissions are optional if using a GitHub App bot (BOT_ID/BOT_KEY)
+    # Uncomment if using GITHUB_TOKEN:
+    # permissions:
+    #   contents: read
+    #   pull-requests: read
+    #   issues: read
+    #   id-token: write
+    #   actions: write
     steps:
       - name: Initialize custom bot
         id: bot

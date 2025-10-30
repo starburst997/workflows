@@ -17,10 +17,12 @@ on:
       - ".github/workflows/gh-pages.yaml"
   workflow_dispatch:
 
-permissions:
-  contents: read
-  pages: write
-  id-token: write
+# Permissions are optional if using a GitHub App bot (BOT_ID/BOT_KEY)
+# Uncomment if using GITHUB_TOKEN:
+# permissions:
+#   contents: read
+#   pages: write
+#   id-token: write
 
 concurrency:
   group: "pages"

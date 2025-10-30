@@ -40,6 +40,12 @@ on:
 
 jobs:
   jd:
+    permissions: # Optional - remove if using BOT_ID / BOT_KEY
+      issues: write
+      contents: read
+      pull-requests: read
+      id-token: write
+      actions: write
     uses: starburst997/workflows/.github/workflows/jd.yml@v1
     secrets: inherit
 ```
@@ -73,6 +79,11 @@ on:
 
 jobs:
   review:
+    permissions: # Optional - remove if using BOT_ID / BOT_KEY
+      contents: read
+      pull-requests: read
+      issues: read
+      id-token: write
     uses: starburst997/workflows/.github/workflows/jd-review.yml@v1
     secrets: inherit
 ```
@@ -94,7 +105,7 @@ Automatically deploys documentation from the `docs/` directory to GitHub Pages.
 **Example Usage:**
 
 ```yaml
-name: Github Pages
+name: GitHub Pages
 
 on:
   push:
@@ -105,6 +116,10 @@ on:
 
 jobs:
   deploy:
+    permissions: # Optional - remove if using BOT_ID / BOT_KEY
+      contents: read
+      pages: write
+      id-token: write
     uses: starburst997/workflows/.github/workflows/gh-pages.yaml@v1
     secrets: inherit
 ```
@@ -139,6 +154,8 @@ on:
 
 jobs:
   release:
+    permissions: # Optional - remove if using BOT_ID / BOT_KEY
+      contents: write
     uses: starburst997/workflows/.github/workflows/release.yml@v1
     with:
       update-major-minor: true # Optional, defaults to true

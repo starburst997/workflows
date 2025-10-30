@@ -19,11 +19,14 @@ on:
     branches:
       - main
 
+# Permissions are optional if using a GitHub App bot (BOT_ID/BOT_KEY)
+# Uncomment if using GITHUB_TOKEN:
+# permissions:
+#   contents: write
+
 jobs:
   release:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
       - name: Initialize custom bot
         id: bot

@@ -22,6 +22,14 @@ on:
     #   - "src/**/*.js"
     #   - "src/**/*.jsx"
 
+# Permissions are optional if using a GitHub App bot (BOT_ID/BOT_KEY)
+# Uncomment if using GITHUB_TOKEN:
+# permissions:
+#   contents: read
+#   pull-requests: read
+#   issues: read
+#   id-token: write
+
 jobs:
   jd-review:
     # Only run if triggered by repository owner or jd-botvin bot
@@ -31,11 +39,6 @@ jobs:
 
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    permissions:
-      contents: read
-      pull-requests: read
-      issues: read
-      id-token: write
 
     steps:
       - name: Initialize custom bot
