@@ -1,6 +1,17 @@
 name: Claude Code
 
 on:
+  workflow_call:
+    secrets:
+      BOT_ID:
+        required: false
+        description: "GitHub App ID for the custom bot"
+      BOT_KEY:
+        required: false
+        description: "GitHub App private key for the custom bot"
+      CLAUDE_CODE_OAUTH_TOKEN:
+        required: true
+        description: "Claude Code OAuth token for authentication"
   issue_comment:
     types: [created]
   pull_request_review_comment:
