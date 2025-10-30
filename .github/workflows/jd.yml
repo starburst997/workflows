@@ -21,8 +21,7 @@ on:
   pull_request_review:
     types: [submitted]
 
-# Permissions are optional if using a GitHub App bot (BOT_ID/BOT_KEY)
-# Uncomment if using GITHUB_TOKEN:
+# Permissions set by workflow call
 # permissions:
 #   issues: write
 
@@ -66,8 +65,7 @@ jobs:
       )
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    # Permissions are optional if using a GitHub App bot (BOT_ID/BOT_KEY)
-    # Uncomment if using GITHUB_TOKEN:
+    # Permissions set by workflow call
     # permissions:
     #   contents: read
     #   pull-requests: read

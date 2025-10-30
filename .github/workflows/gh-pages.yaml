@@ -17,8 +17,7 @@ on:
       - ".github/workflows/gh-pages.yaml"
   workflow_dispatch:
 
-# Permissions are optional if using a GitHub App bot (BOT_ID/BOT_KEY)
-# Uncomment if using GITHUB_TOKEN:
+# Permissions set by workflow call
 # permissions:
 #   contents: read
 #   pages: write

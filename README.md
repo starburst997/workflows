@@ -40,14 +40,14 @@ on:
 
 jobs:
   jd:
-    permissions: # Optional - remove if using BOT_ID / BOT_KEY
+    uses: starburst997/workflows/.github/workflows/jd.yml@v1
+    secrets: inherit
+    permissions: # Optional if using bot
       issues: write
       contents: read
       pull-requests: read
       id-token: write
       actions: write
-    uses: starburst997/workflows/.github/workflows/jd.yml@v1
-    secrets: inherit
 ```
 
 ### 2. JD Review (`jd-review.yml`)
@@ -79,13 +79,13 @@ on:
 
 jobs:
   review:
-    permissions: # Optional - remove if using BOT_ID / BOT_KEY
+    uses: starburst997/workflows/.github/workflows/jd-review.yml@v1
+    secrets: inherit
+    permissions: # Optional if using bot
       contents: read
       pull-requests: read
       issues: read
       id-token: write
-    uses: starburst997/workflows/.github/workflows/jd-review.yml@v1
-    secrets: inherit
 ```
 
 ### 3. GitHub Pages Deployment (`gh-pages.yaml`)
@@ -116,12 +116,12 @@ on:
 
 jobs:
   deploy:
-    permissions: # Optional - remove if using BOT_ID / BOT_KEY
+    uses: starburst997/workflows/.github/workflows/gh-pages.yaml@v1
+    secrets: inherit
+    permissions: # Optional if using bot
       contents: read
       pages: write
       id-token: write
-    uses: starburst997/workflows/.github/workflows/gh-pages.yaml@v1
-    secrets: inherit
 ```
 
 ### 4. Automated Release (`release.yml`)
@@ -154,12 +154,12 @@ on:
 
 jobs:
   release:
-    permissions: # Optional - remove if using BOT_ID / BOT_KEY
-      contents: write
     uses: starburst997/workflows/.github/workflows/release.yml@v1
     with:
       update-major-minor: true # Optional, defaults to true
     secrets: inherit
+    permissions: # Optional if using bot
+      contents: write
 ```
 
 ## Setup
