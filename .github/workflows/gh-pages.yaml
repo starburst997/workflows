@@ -82,22 +82,21 @@ jobs:
         env:
           GH_TOKEN: ${{ steps.bot.outputs.token }}
         run: |
-          echo "Getting OIDC token..."
-          OIDC_TOKEN=$(curl -sS -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
-            "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=github-pages" | jq -r '.value')
-
-          if [ -z "$OIDC_TOKEN" ] || [ "$OIDC_TOKEN" = "null" ]; then
-            echo "Error: Failed to get OIDC token"
-            exit 1
-          fi
-          echo "OIDC token obtained (first 20 chars): ${OIDC_TOKEN:0:20}..."
+          #echo "Getting OIDC token..."
+          #OIDC_TOKEN=$(curl -sS -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+          #  "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=github-pages" | jq -r '.value')
+          #
+          #if [ -z "$OIDC_TOKEN" ] || [ "$OIDC_TOKEN" = "null" ]; then
+          #  echo "Error: Failed to get OIDC token"
+          #  exit 1
+          #fi
+          #echo "OIDC token obtained (first 20 chars): ${OIDC_TOKEN:0:20}..."
 
           echo "Building deployment payload..."
           PAYLOAD=$(jq -n \
             --argjson artifact_id "${{ steps.artifact.outputs.artifact_id }}" \
             --arg pages_build_version "${{ github.sha }}" \
-            --arg oidc_token "$OIDC_TOKEN" \
-            '{artifact_id: $artifact_id, pages_build_version: $pages_build_version, oidc_token: $oidc_token}')
+            '{artifact_id: $artifact_id, pages_build_version: $pages_build_version}')
 
           echo "Payload:"
           echo "$PAYLOAD" | jq '.'
