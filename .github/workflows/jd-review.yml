@@ -1,4 +1,4 @@
-name: Claude Code Review
+name: JD Review
 
 on:
   workflow_call:
@@ -23,7 +23,7 @@ on:
     #   - "src/**/*.jsx"
 
 jobs:
-  claude-review:
+  jd-review:
     # Only run if triggered by repository owner or jd-botvin bot
     if: |
       github.event.sender.login == github.repository_owner ||

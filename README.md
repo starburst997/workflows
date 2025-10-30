@@ -4,9 +4,9 @@ This repository contains reusable GitHub Actions workflows for automating common
 
 ## Available Workflows
 
-### 1. Claude Code (`claude.yml`)
+### 1. JD Code (`jd.yml`)
 
-Automates issue and PR management using Claude AI.
+Automates issue and PR management using JD AI.
 
 **Triggers:**
 
@@ -26,7 +26,7 @@ Automates issue and PR management using Claude AI.
 **Example Usage:**
 
 ```yaml
-name: Claude Automation
+name: JD Code
 
 on:
   issue_comment:
@@ -39,14 +39,14 @@ on:
     types: [submitted]
 
 jobs:
-  claude:
-    uses: starburst997/workflows/.github/workflows/claude.yml@main
+  jd:
+    uses: starburst997/workflows/.github/workflows/jd.yml@v1
     secrets: inherit
 ```
 
-### 2. Claude Code Review (`claude-code-review.yml`)
+### 2. JD Review (`jd-review.yml`)
 
-Automatically reviews pull requests using Claude AI.
+Automatically reviews pull requests using JD AI.
 
 **Triggers:**
 
@@ -65,7 +65,7 @@ Automatically reviews pull requests using Claude AI.
 **Example Usage:**
 
 ```yaml
-name: Automated Code Review
+name: JD Review
 
 on:
   pull_request:
@@ -73,7 +73,7 @@ on:
 
 jobs:
   review:
-    uses: starburst997/workflows/.github/workflows/claude-code-review.yml@main
+    uses: starburst997/workflows/.github/workflows/jd-review.yml@v1
     secrets: inherit
 ```
 
@@ -105,7 +105,7 @@ on:
 
 jobs:
   deploy:
-    uses: starburst997/workflows/.github/workflows/gh-pages.yaml@main
+    uses: starburst997/workflows/.github/workflows/gh-pages.yaml@v1
     secrets: inherit
 ```
 
@@ -135,7 +135,7 @@ on:
 
 jobs:
   release:
-    uses: starburst997/workflows/.github/workflows/release.yml@main
+    uses: starburst997/workflows/.github/workflows/release.yml@v1
     secrets: inherit
 ```
 

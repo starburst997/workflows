@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reusable GitHub Workflows - AI-Powered Automation</title>
+    <meta
+      name="description"
+      content="Reusable GitHub Actions workflows for automating development tasks with AI assistance. Automate code reviews, issue management, releases, and documentation deployment."
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        line-height: 1.6;
+        color: #d0d0d9;
+        background: #0c1018;
+        min-height: 100vh;
+      }
+
+      .hero-background {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 100vh;
+        background: linear-gradient(135deg, #0c1018 0%, #191923 100%);
+        z-index: -1;
+      }
+
+      .hero-accent {
+        position: absolute;
+        width: 600px;
+        height: 600px;
+        background: radial-gradient(circle, #61afff20 0%, transparent 70%);
+        top: -300px;
+        left: 50%;
+        transform: translateX(-50%);
+        pointer-events: none;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      header {
+        padding: 2rem 0;
+        text-align: center;
+      }
+
+      .hero {
+        padding: 4rem 0 6rem;
+        text-align: center;
+      }
+
+      h1 {
+        font-size: 3.5rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        background: linear-gradient(to right, #61afff, #98d280);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .tagline {
+        font-size: 1.5rem;
+        margin-bottom: 2rem;
+        color: #96969d;
+        max-width: 700px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .cta-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 2rem;
+      }
+
+      .btn {
+        display: inline-block;
+        padding: 0.875rem 2rem;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        font-size: 1.1rem;
+      }
+
+      .btn-primary {
+        background: #61afff;
+        color: #0c1018;
+        border: 1px solid #61afff;
+      }
+
+      .btn-primary:hover {
+        background: #7abfff;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 30px rgba(97, 175, 255, 0.3);
+      }
+
+      .btn-secondary {
+        background: transparent;
+        color: #d0d0d9;
+        border: 2px solid #3f3f3f;
+      }
+
+      .btn-secondary:hover {
+        background: #32373c;
+        border-color: #636669;
+      }
+
+      .features-section {
+        background: #141518;
+        border-top: 1px solid #3f3f3f;
+        border-bottom: 1px solid #3f3f3f;
+        padding: 5rem 0;
+      }
+
+      .features {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 2rem;
+        margin-top: 3rem;
+      }
+
+      .feature {
+        text-align: center;
+        padding: 1.5rem;
+      }
+
+      .feature-icon {
+        width: 60px;
+        height: 60px;
+        background: #32373c;
+        border: 1px solid #3f3f3f;
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        font-size: 1.8rem;
+      }
+
+      .feature h3 {
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+        color: #61afff;
+      }
+
+      .feature p {
+        color: #96969d;
+        line-height: 1.7;
+        font-size: 0.95rem;
+      }
+
+      .section-title {
+        text-align: center;
+        font-size: 2.5rem;
+        color: #d0d0d9;
+        margin-bottom: 1rem;
+      }
+
+      .section-subtitle {
+        text-align: center;
+        color: #96969d;
+        font-size: 1.2rem;
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      .usage-section {
+        padding: 4rem 0;
+        background: #0c1018;
+      }
+
+      .workflow-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+        gap: 2rem;
+        margin-top: 3rem;
+      }
+
+      .workflow-card {
+        background: #141518;
+        border: 1px solid #3f3f3f;
+        border-radius: 10px;
+        padding: 2rem;
+      }
+
+      .workflow-card h3 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+        color: #61afff;
+      }
+
+      .workflow-card p {
+        color: #96969d;
+        margin-bottom: 1.5rem;
+        line-height: 1.6;
+      }
+
+      .code-block {
+        background: #0c1018;
+        border: 1px solid #3f3f3f;
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-top: 1rem;
+        overflow-x: auto;
+      }
+
+      .code-block pre {
+        font-family: "Monaco", "Courier New", monospace;
+        font-size: 0.85rem;
+        color: #d0d0d9;
+        line-height: 1.6;
+      }
+
+      .code-block code {
+        color: #98d280;
+      }
+
+      /* Syntax highlighting */
+      .yaml-key {
+        color: #61afff;
+      }
+
+      .yaml-string {
+        color: #98d280;
+      }
+
+      .yaml-value {
+        color: #ffe169;
+      }
+
+      .yaml-comment {
+        color: #636669;
+        font-style: italic;
+      }
+
+      .yaml-variable {
+        color: #e18cf5;
+      }
+
+      .reference-section {
+        background: #141518;
+        border-top: 1px solid #3f3f3f;
+        padding: 4rem 0;
+      }
+
+      .secrets-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 2rem;
+        margin-top: 2rem;
+      }
+
+      .secret-card {
+        background: #0c1018;
+        border: 1px solid #3f3f3f;
+        border-radius: 10px;
+        padding: 2rem;
+      }
+
+      .secret-card h3 {
+        font-size: 1.3rem;
+        margin-bottom: 0.5rem;
+        color: #98d280;
+        font-family: "Monaco", monospace;
+      }
+
+      .secret-badge {
+        display: inline-block;
+        background: #61afff;
+        color: #0c1018;
+        padding: 0.2rem 0.5rem;
+        border-radius: 3px;
+        font-size: 0.75rem;
+        margin-bottom: 1rem;
+        font-weight: 600;
+      }
+
+      .secret-badge.optional {
+        background: #636669;
+        color: #d0d0d9;
+      }
+
+      .secret-card p {
+        color: #96969d;
+        font-size: 0.95rem;
+        line-height: 1.6;
+      }
+
+      footer {
+        background: #0c1018;
+        padding: 3rem 0;
+        text-align: center;
+        color: #96969d;
+        border-top: 1px solid #3f3f3f;
+      }
+
+      footer a {
+        color: #61afff;
+        text-decoration: none;
+        font-weight: 600;
+      }
+
+      footer a:hover {
+        color: #98d280;
+        text-decoration: underline;
+      }
+
+      .setup-section {
+        background: #0c1018;
+        padding: 4rem 0;
+      }
+
+      .setup-steps {
+        max-width: 800px;
+        margin: 3rem auto 0;
+      }
+
+      .setup-step {
+        background: #141518;
+        border: 1px solid #3f3f3f;
+        border-radius: 10px;
+        padding: 2rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .setup-step h3 {
+        font-size: 1.3rem;
+        color: #61afff;
+        margin-bottom: 1rem;
+      }
+
+      .setup-step p {
+        color: #96969d;
+        line-height: 1.7;
+        margin-bottom: 0.5rem;
+      }
+
+      .setup-step code {
+        background: #0c1018;
+        color: #98d280;
+        padding: 0.2rem 0.5rem;
+        border-radius: 3px;
+        font-family: "Monaco", monospace;
+        font-size: 0.9rem;
+      }
+
+      @media (max-width: 768px) {
+        h1 {
+          font-size: 2.5rem;
+        }
+
+        .tagline {
+          font-size: 1.2rem;
+        }
+
+        .features {
+          grid-template-columns: 1fr;
+          gap: 2rem;
+        }
+
+        .workflow-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .cta-buttons {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="hero-background">
+      <div class="hero-accent"></div>
+    </div>
+
+    <header>
+      <div class="container">
+        <nav>
+          <a
+            href="https://github.com/starburst997/workflows"
+            class="btn btn-secondary"
+          >
+            View on GitHub &rarr;
+          </a>
+        </nav>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div class="container">
+        <h1>Reusable GitHub Workflows</h1>
+        <p class="tagline">
+          AI-powered automation for modern development teams. Automate code
+          reviews, issue management, releases, and documentation deployment with
+          reusable GitHub Actions workflows.
+        </p>
+        <div class="cta-buttons">
+          <a
+            href="https://github.com/starburst997/workflows"
+            class="btn btn-primary"
+          >
+            Get Started
+          </a>
+          <a href="#workflows" class="btn btn-secondary"> View Workflows </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="features-section">
+      <div class="container">
+        <h2 class="section-title">Powerful Automation Features</h2>
+        <p class="section-subtitle">
+          Everything you need to streamline your development workflow
+        </p>
+
+        <div class="features">
+          <div class="feature">
+            <div class="feature-icon">&#129302;</div>
+            <h3>AI-Powered Reviews</h3>
+            <p>
+              Automated code reviews with intelligent feedback on quality,
+              security, and performance.
+            </p>
+          </div>
+
+          <div class="feature">
+            <div class="feature-icon">&#128260;</div>
+            <h3>Smart Issue Management</h3>
+            <p>
+              JD responds to comments and labels, automating issue triage and PR
+              workflows.
+            </p>
+          </div>
+
+          <div class="feature">
+            <div class="feature-icon">&#128640;</div>
+            <h3>Automated Releases</h3>
+            <p>
+              Semantic versioning and changelog generation handled automatically
+              on every push.
+            </p>
+          </div>
+
+          <div class="feature">
+            <div class="feature-icon">&#128214;</div>
+            <h3>Docs Deployment</h3>
+            <p>
+              One-click GitHub Pages deployment for your documentation
+              directory.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="usage-section" id="workflows">
+      <div class="container">
+        <h2 class="section-title">Available Workflows</h2>
+        <p class="section-subtitle">
+          Drop these into your repository and start automating
+        </p>
+
+        <div class="workflow-grid">
+          <div class="workflow-card">
+            <h3>1. JD Code Assistant</h3>
+            <p>
+              Automates issue and PR management using AI. Responds to
+              <code>/jd</code> commands and the <code>jd</code> label for
+              intelligent task automation.
+            </p>
+            <div class="code-block">
+              <pre><code><span class="yaml-key">name:</span> <span class="yaml-string">JD Code</span>
+
+<span class="yaml-key">on:</span>
+  <span class="yaml-key">issue_comment:</span>
+    <span class="yaml-key">types:</span> [created]
+  <span class="yaml-key">pull_request_review_comment:</span>
+    <span class="yaml-key">types:</span> [created]
+  <span class="yaml-key">issues:</span>
+    <span class="yaml-key">types:</span> [opened, assigned, labeled]
+  <span class="yaml-key">pull_request_review:</span>
+    <span class="yaml-key">types:</span> [submitted]
+
+<span class="yaml-key">jobs:</span>
+  <span class="yaml-key">jd:</span>
+    <span class="yaml-key">uses:</span> <span class="yaml-string">starburst997/workflows/.github/workflows/jd.yml@v1</span>
+    <span class="yaml-key">secrets:</span> <span class="yaml-value">inherit</span></code></pre>
+            </div>
+          </div>
+
+          <div class="workflow-card">
+            <h3>2. Automated Code Review</h3>
+            <p>
+              AI-powered code review that analyzes PRs for quality, bugs,
+              security issues, and suggests improvements automatically.
+            </p>
+            <div class="code-block">
+              <pre><code><span class="yaml-key">name:</span> <span class="yaml-string">JD Review</span>
+
+<span class="yaml-key">on:</span>
+  <span class="yaml-key">pull_request:</span>
+    <span class="yaml-key">types:</span> [opened, ready_for_review]
+
+<span class="yaml-key">jobs:</span>
+  <span class="yaml-key">review:</span>
+    <span class="yaml-key">uses:</span> <span class="yaml-string">starburst997/workflows/.github/workflows/jd-review.yml@v1</span>
+    <span class="yaml-key">secrets:</span> <span class="yaml-value">inherit</span></code></pre>
+            </div>
+          </div>
+
+          <div class="workflow-card">
+            <h3>3. GitHub Pages Deployment</h3>
+            <p>
+              Automatically deploys your documentation from the
+              <code>docs/</code> directory to GitHub Pages on every push to
+              main.
+            </p>
+            <div class="code-block">
+              <pre><code><span class="yaml-key">name:</span> <span class="yaml-string">Deploy Docs</span>
+
+<span class="yaml-key">on:</span>
+  <span class="yaml-key">push:</span>
+    <span class="yaml-key">branches:</span> [main]
+    <span class="yaml-key">paths:</span> [<span class="yaml-string">"docs/**"</span>]
+
+<span class="yaml-key">jobs:</span>
+  <span class="yaml-key">deploy:</span>
+    <span class="yaml-key">uses:</span> <span class="yaml-string">starburst997/workflows/.github/workflows/gh-pages.yaml@v1</span>
+    <span class="yaml-key">secrets:</span> <span class="yaml-value">inherit</span></code></pre>
+            </div>
+          </div>
+
+          <div class="workflow-card">
+            <h3>4. Automated Release</h3>
+            <p>
+              Semantic versioning with automatic changelog generation. Creates
+              releases and tags on every push to your main branch.
+            </p>
+            <div class="code-block">
+              <pre><code><span class="yaml-key">name:</span> <span class="yaml-string">Release</span>
+
+<span class="yaml-key">on:</span>
+  <span class="yaml-key">push:</span>
+    <span class="yaml-key">branches:</span> [main]
+
+<span class="yaml-key">jobs:</span>
+  <span class="yaml-key">release:</span>
+    <span class="yaml-key">uses:</span> <span class="yaml-string">starburst997/workflows/.github/workflows/release.yml@v1</span>
+    <span class="yaml-key">secrets:</span> <span class="yaml-value">inherit</span></code></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="reference-section">
+      <div class="container">
+        <h2 class="section-title">Required Configuration</h2>
+        <p class="section-subtitle">Secrets needed for AI-powered workflows</p>
+
+        <div class="secrets-grid">
+          <div class="secret-card">
+            <h3>CLAUDE_CODE_OAUTH_TOKEN</h3>
+            <span class="secret-badge">Required</span>
+            <p>
+              OAuth token for Claude Code AI assistant authentication. Required
+              for JD Code and JD Review workflows.
+            </p>
+          </div>
+
+          <div class="secret-card">
+            <h3>BOT_ID</h3>
+            <span class="secret-badge optional">Optional</span>
+            <p>
+              GitHub App ID for custom bot integration. Use this if you want to
+              run workflows under a custom GitHub App instead of the default
+              GitHub Actions bot.
+            </p>
+          </div>
+
+          <div class="secret-card">
+            <h3>BOT_KEY</h3>
+            <span class="secret-badge optional">Optional</span>
+            <p>
+              GitHub App private key for custom bot integration. Must be
+              provided together with BOT_ID for custom bot functionality.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="setup-section">
+      <div class="container">
+        <h2 class="section-title">Quick Setup</h2>
+        <p class="section-subtitle">Get up and running in three simple steps</p>
+
+        <div class="setup-steps">
+          <div class="setup-step">
+            <h3>Step 1: Add Secrets</h3>
+            <p>
+              Navigate to your repository settings and add the required secrets
+              under
+              <strong
+                >Settings &rarr; Secrets and variables &rarr; Actions</strong
+              >:
+            </p>
+            <p>
+              &bull; <code>CLAUDE_CODE_OAUTH_TOKEN</code> - Required for AI
+              workflows
+            </p>
+            <p>
+              &bull; <code>BOT_ID</code> and <code>BOT_KEY</code> - Optional for
+              custom bot
+            </p>
+          </div>
+
+          <div class="setup-step">
+            <h3>Step 2: Create Workflow File</h3>
+            <p>
+              Create a new file in your repository at
+              <code>.github/workflows/automation.yml</code>
+            </p>
+            <p>
+              Copy one of the workflow examples above and paste it into your new
+              file.
+            </p>
+          </div>
+
+          <div class="setup-step">
+            <h3>Step 3: Commit and Push</h3>
+            <p>
+              Commit the workflow file to your repository. The automation will
+              activate immediately based on the configured triggers.
+            </p>
+            <p>
+              For JD Code Assistant, comment <code>/jd</code> on any issue or PR
+              to trigger the AI assistant.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div class="container">
+        <p>
+          Built with care by
+          <a href="https://github.com/starburst997">starburst997</a>
+        </p>
+        <p style="margin-top: 1rem">
+          <a href="https://github.com/starburst997/workflows">GitHub</a> &bull;
+          <a href="https://github.com/starburst997/workflows/issues"
+            >Report Issue</a
+          >
+          &bull;
+          <a href="https://github.com/starburst997/workflows/releases"
+            >Releases</a
+          >
+        </p>
+      </div>
+    </footer>
+  </body>
+</html>

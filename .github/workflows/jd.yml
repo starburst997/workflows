@@ -1,4 +1,4 @@
-name: Claude Code
+name: JD Code
 
 on:
   workflow_call:
@@ -52,7 +52,7 @@ jobs:
               body: '/jd call command /common:issue'
             });
 
-  claude:
+  jd:
     if: |
       (github.event.sender.login == github.repository_owner || github.event.sender.login == 'jd-botvin[bot]') &&
       (

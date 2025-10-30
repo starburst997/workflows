@@ -36,6 +36,7 @@ jobs:
         uses: starburst997/auto-version@v1
         with:
           token: ${{ steps.bot.outputs.token }}
+          update-major-minor: true
 
       - name: Generate changelog and create release
         uses: starburst997/commits-logs@v1
