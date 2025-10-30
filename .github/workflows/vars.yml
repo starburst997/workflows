@@ -1,0 +1,81 @@
+name: JD Common Variables
+
+on:
+  workflow_call:
+    inputs:
+      plugin-marketplaces:
+        type: string
+        default: https://github.com/starburst997/claude.git
+      plugins:
+        type: string
+        default: common@jd
+      trigger-phrase:
+        type: string
+        default: /jd
+      branch-prefix:
+        type: string
+        default: jd/
+      label-trigger:
+        type: string
+        default: jd
+      allowed-tools:
+        type: string
+        default: |
+          SlashCommand
+          Bash(git fetch:*)
+          Bash(gh api:*)
+          Bash(gh issue view:*)
+          Bash(gh search:*)
+          Bash(gh issue list:*)
+          Bash(gh pr comment:*)
+          Bash(gh pr diff:*)
+          Bash(gh pr view:*)
+          Bash(gh pr list:*)
+          Bash(gh pr create:*)
+          WebSearch
+          WebFetch(domain:github.com)
+          WebFetch(domain:*)
+          Bash(mkdir:*)
+          Bash(chmod:*)
+          Bash(rm:*)
+          Bash(mv:*)
+          Bash(cp:*)
+          Bash(cat:*)
+          Bash(echo:*)
+
+    outputs:
+      plugin-marketplaces:
+        description: "Plugin marketplace URLs"
+        value: ${{ jobs.vars.outputs.plugin-marketplaces }}
+      plugins:
+        description: "Plugins to load"
+        value: ${{ jobs.vars.outputs.plugins }}
+      trigger-phrase:
+        description: "Trigger phrase for JD"
+        value: ${{ jobs.vars.outputs.trigger-phrase }}
+      branch-prefix:
+        description: "Branch prefix for JD branches"
+        value: ${{ jobs.vars.outputs.branch-prefix }}
+      label-trigger:
+        description: "Label that triggers JD"
+        value: ${{ jobs.vars.outputs.label-trigger }}
+      allowed-tools:
+        description: "Comma-separated list of allowed tools for JD"
+        value: ${{ jobs.vars.outputs.allowed-tools }}
+
+jobs:
+  vars:
+    runs-on: ubuntu-latest
+    outputs:
+      plugin-marketplaces: ${{ inputs.plugin-marketplaces }}
+      plugins: ${{ inputs.plugins }}
+      trigger-phrase: ${{ inputs.trigger-phrase }}
+      branch-prefix: ${{ inputs.branch-prefix }}
+      label-trigger: ${{ inputs.label-trigger }}
+      allowed-tools: ${{ steps.transform-tools.outputs.allowed-tools }}
+    steps:
+      - name: Transform allowed tools to comma-separated
+        id: transform-tools
+        run: |
+          ALLOWED_TOOLS=$(echo "${{ inputs.allowed-tools }}" | tr '\n' ',' | sed 's/,$//')
+          echo "allowed-tools=$ALLOWED_TOOLS" >> $GITHUB_OUTPUT
