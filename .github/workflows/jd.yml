@@ -56,7 +56,7 @@ jobs:
         run: |
           gh issue comment ${{ github.event.issue.number }} \
             --repo ${{ github.repository }} \
-            --body '/jd **YOU MUST** call the `/common:issue` command'
+            --body '/JD **YOU MUST** call the `/common:issue` command'
 
   jd:
     needs: setup
@@ -119,6 +119,33 @@ jobs:
       #      echo "📝 Using default prompt (from trigger comment)"
       #    fi
 
+      - name: Detect and normalize trigger phrase
+        id: trigger_phrase
+        run: |
+          # Get the relevant text body based on event type
+          if [ "${{ github.event_name }}" == "issue_comment" ]; then
+            TEXT_BODY="${{ github.event.comment.body }}"
+          elif [ "${{ github.event_name }}" == "pull_request_review_comment" ]; then
+            TEXT_BODY="${{ github.event.comment.body }}"
+          elif [ "${{ github.event_name }}" == "pull_request_review" ]; then
+            TEXT_BODY="${{ github.event.review.body }}"
+          elif [ "${{ github.event_name }}" == "issues" ]; then
+            TEXT_BODY="${{ github.event.issue.body }} ${{ github.event.issue.title }}"
+          else
+            TEXT_BODY=""
+          fi
+
+          # Search for /jd case-insensitively and extract the actual case used
+          if echo "$TEXT_BODY" | grep -ioE '/jd\b' > /dev/null 2>&1; then
+            FOUND_PHRASE=$(echo "$TEXT_BODY" | grep -ioE '/jd\b' | head -n 1)
+            echo "trigger_phrase=$FOUND_PHRASE" >> $GITHUB_OUTPUT
+            echo "✅ Found trigger phrase: $FOUND_PHRASE"
+          else
+            # Default to lowercase if not found (shouldn't happen due to job if condition)
+            echo "trigger_phrase=/jd" >> $GITHUB_OUTPUT
+            echo "⚠️ No trigger phrase found, defaulting to /jd"
+          fi
+
       - name: Run Claude Code
         id: claude
         uses: anthropics/claude-code-action@v1
@@ -130,7 +157,7 @@ jobs:
           allowed_bots: ${{ steps.bot.outputs.slug }}
           plugin_marketplaces: ${{ needs.setup.outputs.plugin-marketplaces }}
           plugins: ${{ needs.setup.outputs.plugins }}
-          trigger_phrase: ${{ needs.setup.outputs.trigger-phrase }}
+          trigger_phrase: ${{ steps.trigger_phrase.outputs.trigger_phrase }}
           branch_prefix: ${{ needs.setup.outputs.branch-prefix }}
           assignee_trigger: "@${{ steps.bot.outputs.slug }}"
           label_trigger: ${{ needs.setup.outputs.label-trigger }}
