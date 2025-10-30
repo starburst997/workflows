@@ -19,6 +19,7 @@ jobs:
     #   github.event.pull_request.author_association == 'FIRST_TIME_CONTRIBUTOR'
 
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     permissions:
       contents: read
       pull-requests: read
@@ -56,10 +57,12 @@ jobs:
             Use the repository's CLAUDE.md for guidance on style and conventions. Be constructive and helpful in your feedback.
 
             Use `gh pr comment` with your Bash tool to leave your review as a comment on the PR.
+            DO NOT give a scored review or "stars", no need to "rate" the PR.
+            Keep emojis to a minimum.
 
           # See https://github.com/anthropics/claude-code-action/blob/main/docs/usage.md
           # or https://docs.claude.com/en/docs/claude-code/cli-reference for available options
-          claude_args: '--allowed-tools "Bash(gh issue view:*),Bash(gh search:*),Bash(gh issue list:*),Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash(gh pr list:*),Bash(gh pr create:*),WebSearch,WebFetch(domain:github.com),WebFetch(domain:*),Bash(mkdir:*),Bash(chmod:*)"'
+          claude_args: '--allowed-tools "Bash(gh issue view:*),Bash(gh search:*),Bash(gh issue list:*),Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash(gh pr list:*),Bash(gh pr create:*),WebSearch,WebFetch(domain:github.com),WebFetch(domain:*),Bash(mkdir:*),Bash(chmod:*),Bash(rm:*),Bash(mv:*),Bash(cp:*),Bash(cat:*),Bash(echo:*)"'
 
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           github_token: ${{ steps.bot.outputs.token }}
