@@ -148,16 +148,20 @@ jobs:
       - name: Process comment body
         if: steps.find_comment.outputs.comment-id != ''
         id: process_body
+        env:
+          BOT_SLUG: ${{ steps.bot.outputs.slug }}
         run: |
           # Save the original comment body to a file
           cat << 'EOF' > original_comment.txt
           ${{ steps.find_comment.outputs.comment-body }}
           EOF
 
-          # Process the comment: replace Claude with JD, remove Create PR link, remove branch footer, and remove trailing footer separators
+          # Process the comment: replace Claude with JD, remove bot mention tasks, remove Create PR link, remove branch footers
           sed -e 's/\*\*Claude finished/\*\*JD finished/g' original_comment.txt | \
+            sed -E "s/@${BOT_SLUG}\[bot\]'s task/the task/g" | \
             sed -E 's/ • \[Create PR ➔\]\([^)]+\)//g' | \
             perl -pe 's/\n---.*\[Branch: [^\]]+\]\([^\)]+\)$//g' | \
+            perl -pe 's/\n---\s*\n\[Branch: [^\]]+\]\([^\)]+\)\s*\|?\s*$//g' | \
             perl -pe 's/\n---\s*\|\s*$//g' > processed_comment.txt
 
           # Set the processed body as output (using EOF to handle multiline)
