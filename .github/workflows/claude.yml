@@ -4,10 +4,10 @@ on:
   workflow_call:
     secrets:
       BOT_ID:
-        required: true
+        required: false
         description: "GitHub App ID for the custom bot"
       BOT_KEY:
-        required: true
+        required: false
         description: "GitHub App private key for the custom bot"
       CLAUDE_CODE_OAUTH_TOKEN:
         required: true
