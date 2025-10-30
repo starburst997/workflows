@@ -1,6 +1,14 @@
 name: Claude Code Review
 
 on:
+  workflow_call:
+    secrets:
+      BOT_ID:
+        required: true
+      BOT_KEY:
+        required: true
+      CLAUDE_CODE_OAUTH_TOKEN:
+        required: true
   pull_request:
     types: [opened, synchronize]
     # Optional: Only run on specific file changes
