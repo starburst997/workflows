@@ -137,7 +137,8 @@ jobs:
       - name: Find Claude completion comment
         if: |
           steps.detect_source.outputs.source == 'issue_comment' ||
-          steps.detect_source.outputs.source == 'issue'
+          steps.detect_source.outputs.source == 'issue' ||
+          steps.detect_source.outputs.source == 'pr_review_comment'
         id: find_comment
         uses: starburst997/find-comment@v3
         with:
