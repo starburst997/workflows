@@ -38,6 +38,9 @@ on:
   pull_request_review:
     types: [submitted]
 
+permissions:
+  id-token: write
+
 jobs:
   jd:
     uses: starburst997/workflows/.github/workflows/jd.yml@v1
@@ -47,7 +50,6 @@ jobs:
       contents: read
       pull-requests: read
       actions: write
-      id-token: write # Required
 ```
 
 ### 2. JD Review (`jd-review.yml`)
@@ -77,6 +79,9 @@ on:
   pull_request:
     types: [opened, ready_for_review]
 
+permissions:
+  id-token: write
+
 jobs:
   review:
     uses: starburst997/workflows/.github/workflows/jd-review.yml@v1
@@ -85,7 +90,6 @@ jobs:
       contents: read
       pull-requests: read
       issues: read
-      id-token: write # Required
 ```
 
 ### 3. GitHub Pages Deployment (`gh-pages.yaml`)
@@ -114,6 +118,9 @@ on:
     paths:
       - "docs/**"
 
+permissions:
+  id-token: write
+
 jobs:
   deploy:
     uses: starburst997/workflows/.github/workflows/gh-pages.yaml@v1
@@ -121,7 +128,6 @@ jobs:
     permissions: # Optional if using bot
       contents: read
       pages: write
-      id-token: write # Required
 ```
 
 ### 4. Automated Release (`release.yml`)
