@@ -61,3 +61,5 @@ jobs:
         uses: actions/deploy-pages@v4
         env:
           GITHUB_TOKEN: ${{ steps.bot.outputs.token }}
+        with:
+          token: ${{ steps.bot.outputs.token }}
