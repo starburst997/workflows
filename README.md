@@ -92,7 +92,7 @@ jobs:
       issues: read
 ```
 
-### 3. GitHub Pages Deployment (`gh-pages.yaml`)
+### 3. GitHub Pages Deployment (`gh-pages.yml`)
 
 Automatically deploys documentation from the `docs/` directory to GitHub Pages.
 
@@ -123,7 +123,7 @@ permissions:
 
 jobs:
   deploy:
-    uses: starburst997/workflows/.github/workflows/gh-pages.yaml@v1
+    uses: starburst997/workflows/.github/workflows/gh-pages.yml@v1
     secrets: inherit
     permissions: # Optional if using bot
       contents: read

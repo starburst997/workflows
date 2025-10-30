@@ -14,7 +14,7 @@ on:
       - main
     paths:
       - "docs/**"
-      - ".github/workflows/gh-pages.yaml"
+      - ".github/workflows/gh-pages.yml"
   workflow_dispatch:
 
 # Permissions set by workflow call

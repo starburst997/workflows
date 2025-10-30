@@ -27,7 +27,7 @@ This repository contains reusable GitHub Actions workflows for automating develo
 - **Review guidance**: Focuses on code quality, bugs, performance, security, and test coverage
 - **Uses gh CLI**: Review comments posted via `gh pr comment`
 
-### 3. gh-pages.yaml - Documentation Deployment
+### 3. gh-pages.yml - Documentation Deployment
 
 - **Two-stage deployment**: Build and deploy jobs
 - **Triggers**: Pushes to main affecting docs/ directory or workflow file
