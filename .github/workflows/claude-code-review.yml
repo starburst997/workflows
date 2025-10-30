@@ -1,6 +1,17 @@
 name: Claude Code Review
 
 on:
+  workflow_call:
+    secrets:
+      BOT_ID:
+        required: true
+        description: "GitHub App ID for the custom bot"
+      BOT_KEY:
+        required: true
+        description: "GitHub App private key for the custom bot"
+      CLAUDE_CODE_OAUTH_TOKEN:
+        required: true
+        description: "Claude Code OAuth token for authentication"
   pull_request:
     types: [opened, synchronize]
     # Optional: Only run on specific file changes
