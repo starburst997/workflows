@@ -34,8 +34,17 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Initialize custom bot
+        id: bot
+        uses: starburst997/custom-bot-init@v1
+        with:
+          app-id: ${{ secrets.BOT_ID }}
+          private-key: ${{ secrets.BOT_KEY }}
+
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          token: ${{ steps.bot.outputs.token }}
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
