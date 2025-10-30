@@ -51,16 +51,12 @@ jobs:
           private-key: ${{ secrets.BOT_KEY }}
 
       - name: Add comment to trigger JD
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ steps.bot.outputs.token }}
-          script: |
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              body: '/jd call command /common:issue'
-            });
+        env:
+          GH_TOKEN: ${{ steps.bot.outputs.token }}
+        run: |
+          gh issue comment ${{ github.event.issue.number }} \
+            --repo ${{ github.repository }} \
+            --body '/jd call command /common:issue'
 
   jd:
     needs: setup
