@@ -43,10 +43,13 @@ jobs:
 
   claude:
     if: |
-      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '/jd') && (github.event.sender.login == github.repository_owner || github.event.sender.login == 'jd-botvin[bot]')) ||
-      (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '/jd') && (github.event.sender.login == github.repository_owner || github.event.sender.login == 'jd-botvin[bot]')) ||
-      (github.event_name == 'pull_request_review' && contains(github.event.review.body, '/jd') && (github.event.sender.login == github.repository_owner || github.event.sender.login == 'jd-botvin[bot]')) ||
-      (github.event_name == 'issues' && github.event.action != 'labeled' && (contains(github.event.issue.body, '/jd') || contains(github.event.issue.title, '/jd')) && (github.event.sender.login == github.repository_owner || github.event.sender.login == 'jd-botvin[bot]'))
+      (github.event.sender.login == github.repository_owner || github.event.sender.login == 'jd-botvin[bot]') &&
+      (
+        (github.event_name == 'issue_comment' && contains(github.event.comment.body, '/jd')) ||
+        (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '/jd')) ||
+        (github.event_name == 'pull_request_review' && contains(github.event.review.body, '/jd')) ||
+        (github.event_name == 'issues' && github.event.action != 'labeled' && (contains(github.event.issue.body, '/jd') || contains(github.event.issue.title, '/jd')))
+      )
     runs-on: ubuntu-latest
     timeout-minutes: 20
     permissions:
