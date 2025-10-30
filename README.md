@@ -46,8 +46,8 @@ jobs:
       issues: write
       contents: read
       pull-requests: read
-      id-token: write
       actions: write
+      id-token: write # Required
 ```
 
 ### 2. JD Review (`jd-review.yml`)
@@ -85,7 +85,7 @@ jobs:
       contents: read
       pull-requests: read
       issues: read
-      id-token: write
+      id-token: write # Required
 ```
 
 ### 3. GitHub Pages Deployment (`gh-pages.yaml`)
@@ -121,7 +121,7 @@ jobs:
     permissions: # Optional if using bot
       contents: read
       pages: write
-      id-token: write
+      id-token: write # Required
 ```
 
 ### 4. Automated Release (`release.yml`)

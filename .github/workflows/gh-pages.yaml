@@ -23,9 +23,8 @@ on:
 #   pages: write
 #   id-token: write
 
-# Required permissions
-#permissions:
-#  id-token: write
+permissions:
+  id-token: write
 
 concurrency:
   group: "pages"
@@ -60,89 +59,8 @@ jobs:
           app-id: ${{ secrets.BOT_ID }}
           private-key: ${{ secrets.BOT_KEY }}
 
-      - name: Get artifact metadata
-        id: artifact
-        env:
-          GH_TOKEN: ${{ steps.bot.outputs.token }}
-        run: |
-          # Get the artifact ID for github-pages artifact
-          ARTIFACT_ID=$(gh api /repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts \
-            --jq '.artifacts[] | select(.name == "github-pages") | .id')
-
-          if [ -z "$ARTIFACT_ID" ]; then
-            echo "Error: github-pages artifact not found"
-            exit 1
-          fi
-
-          echo "artifact_id=$ARTIFACT_ID" >> $GITHUB_OUTPUT
-          echo "Found artifact ID: $ARTIFACT_ID"
-
       - name: Deploy to GitHub Pages
         id: deployment
-        env:
-          GH_TOKEN: ${{ steps.bot.outputs.token }}
-        run: |
-          #echo "Getting OIDC token..."
-          #OIDC_TOKEN=$(curl -sS -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
-          #  "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=github-pages" | jq -r '.value')
-          #
-          #if [ -z "$OIDC_TOKEN" ] || [ "$OIDC_TOKEN" = "null" ]; then
-          #  echo "Error: Failed to get OIDC token"
-          #  exit 1
-          #fi
-          #echo "OIDC token obtained (first 20 chars): ${OIDC_TOKEN:0:20}..."
-
-          echo "Building deployment payload..."
-          PAYLOAD=$(jq -n \
-            --argjson artifact_id "${{ steps.artifact.outputs.artifact_id }}" \
-            --arg pages_build_version "${{ github.sha }}" \
-            '{artifact_id: $artifact_id, pages_build_version: $pages_build_version}')
-
-          echo "Payload:"
-          echo "$PAYLOAD" | jq '.'
-
-          echo "Creating Pages deployment..."
-          RESPONSE=$(gh api \
-            --method POST \
-            -H "Accept: application/vnd.github+json" \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
-            /repos/${{ github.repository }}/pages/deployments \
-            --input - <<< "$PAYLOAD")
-
-          echo "Deployment response:"
-          echo "$RESPONSE" | jq '.'
-
-          DEPLOYMENT_ID=$(echo "$RESPONSE" | jq -r '.id')
-          PAGE_URL=$(echo "$RESPONSE" | jq -r '.page_url')
-
-          if [ -z "$DEPLOYMENT_ID" ] || [ "$DEPLOYMENT_ID" = "null" ]; then
-            echo "Error: Failed to create deployment"
-            exit 1
-          fi
-
-          echo "page_url=$PAGE_URL" >> $GITHUB_OUTPUT
-          echo "Deployment ID: $DEPLOYMENT_ID"
-          echo "Page URL: $PAGE_URL"
-
-          # Poll deployment status
-          MAX_ATTEMPTS=60
-          ATTEMPT=0
-          while [ $ATTEMPT -lt $MAX_ATTEMPTS ]; do
-            STATUS=$(gh api /repos/${{ github.repository }}/pages/deployments/$DEPLOYMENT_ID --jq '.status')
-
-            echo "Deployment status: $STATUS"
-
-            if [ "$STATUS" = "succeed" ]; then
-              echo "Deployment succeeded!"
-              exit 0
-            elif [ "$STATUS" = "deployment_failed" ] || [ "$STATUS" = "deployment_content_failed" ] || [ "$STATUS" = "deployment_cancelled" ]; then
-              echo "Deployment failed with status: $STATUS"
-              exit 1
-            fi
-
-            ATTEMPT=$((ATTEMPT + 1))
-            sleep 10
-          done
-
-          echo "Deployment timed out"
-          exit 1
+        uses: actions/deploy-pages@v4
+        with:
+          token: ${{ steps.bot.outputs.token }}
