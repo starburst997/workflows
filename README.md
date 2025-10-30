@@ -1,2 +1,88 @@
-# workflows
-Reusable workflows for GitHub Action
+# Reusable GitHub Workflows
+
+This repository contains reusable GitHub Actions workflows for automating common development tasks.
+
+## Available Workflows
+
+### 1. Claude Code (`claude.yml`)
+
+Automates issue and PR management using Claude AI.
+
+**Triggers:**
+- `workflow_call` - Can be called from other workflows
+- Issue comments, PR review comments, and PR reviews containing `/jd`
+- Issues opened, assigned, or labeled with `jd`
+
+**Required Secrets:**
+- `CLAUDE_CODE_OAUTH_TOKEN` - Claude Code OAuth token for authentication
+
+**Optional Secrets:**
+- `BOT_ID` - GitHub App ID for custom bot
+- `BOT_KEY` - GitHub App private key for custom bot
+
+**Example Usage:**
+
+```yaml
+name: Claude Automation
+
+on:
+  issue_comment:
+    types: [created]
+  pull_request_review_comment:
+    types: [created]
+  issues:
+    types: [opened, assigned, labeled]
+  pull_request_review:
+    types: [submitted]
+
+jobs:
+  claude:
+    uses: starburst997/workflows/.github/workflows/claude.yml@main
+    secrets: inherit
+```
+
+### 2. Claude Code Review (`claude-code-review.yml`)
+
+Automatically reviews pull requests using Claude AI.
+
+**Triggers:**
+- `workflow_call` - Can be called from other workflows
+- Pull requests opened or marked ready for review
+
+**Required Secrets:**
+- `CLAUDE_CODE_OAUTH_TOKEN` - Claude Code OAuth token for authentication
+
+**Optional Secrets:**
+- `BOT_ID` - GitHub App ID for custom bot
+- `BOT_KEY` - GitHub App private key for custom bot
+
+**Example Usage:**
+
+```yaml
+name: Automated Code Review
+
+on:
+  pull_request:
+    types: [opened, ready_for_review]
+
+jobs:
+  review:
+    uses: starburst997/workflows/.github/workflows/claude-code-review.yml@main
+    secrets: inherit
+```
+
+## Setup
+
+To use these workflows in your repository:
+
+1. Add the required secrets to your repository settings:
+   - `CLAUDE_CODE_OAUTH_TOKEN` - Obtain from Claude Code
+   - `BOT_ID` and `BOT_KEY` (optional) - For custom GitHub App integration
+
+2. Create a workflow file in your repository's `.github/workflows/` directory
+
+3. Reference the desired workflow using the examples above
+
+## License
+
+MIT
