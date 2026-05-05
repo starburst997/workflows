@@ -60,6 +60,7 @@ Automatically reviews pull requests using JD AI.
 
 - `workflow_call` - Can be called from other workflows
 - Pull requests opened or marked ready for review
+- Pull requests labeled with `jd`
 
 **Required Secrets:**
 
@@ -70,6 +71,10 @@ Automatically reviews pull requests using JD AI.
 - `BOT_ID` - GitHub App ID for custom bot
 - `BOT_KEY` - GitHub App private key for custom bot
 
+**Optional Inputs:**
+
+- `allow-anyone` - Allow anyone (not just the repository owner or bot) to trigger the code review (default: `false`)
+
 **Example Usage:**
 
 ```yaml
@@ -77,7 +82,7 @@ name: JD Review
 
 on:
   pull_request:
-    types: [opened, ready_for_review]
+    types: [opened, ready_for_review, labeled]
 
 permissions:
   id-token: write
@@ -85,6 +90,8 @@ permissions:
 jobs:
   review:
     uses: starburst997/workflows/.github/workflows/jd-review.yml@v1
+    with:
+      allow-anyone: false # Optional, defaults to false
     secrets: inherit
     permissions: # Optional if using bot
       contents: read

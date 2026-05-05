@@ -2,6 +2,12 @@ name: JD Review
 
 on:
   workflow_call:
+    inputs:
+      allow-anyone:
+        required: false
+        type: boolean
+        default: false
+        description: "When true, allow anyone (not just the repo owner or bot) to trigger the code review"
     secrets:
       BOT_ID:
         required: false
@@ -13,7 +19,7 @@ on:
         required: true
         description: "Claude Code OAuth token for authentication"
   pull_request:
-    types: [opened, ready_for_review]
+    types: [opened, ready_for_review, labeled]
     #types: [opened, synchronize, ready_for_review, reopened]
     # Optional: Only run on specific file changes
     # paths:
@@ -36,9 +42,18 @@ jobs:
   jd-review:
     needs: setup
     # Only run if triggered by repository owner or jd-botvin bot
+    # (or anyone, when allow-anyone is true).
+    # For 'labeled' events, only run when the label matches label-trigger.
     if: |
-      github.event.sender.login == github.repository_owner ||
-      github.event.sender.login == 'jd-botvin[bot]'
+      (
+        inputs.allow-anyone ||
+        github.event.sender.login == github.repository_owner ||
+        github.event.sender.login == 'jd-botvin[bot]'
+      ) &&
+      (
+        github.event.action != 'labeled' ||
+        github.event.label.name == needs.setup.outputs.label-trigger
+      )
 
     runs-on: ubuntu-latest
     timeout-minutes: 20
