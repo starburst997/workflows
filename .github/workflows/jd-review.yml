@@ -74,7 +74,7 @@ jobs:
 
       - name: Run Claude Code Review
         id: claude-review
-        uses: anthropics/claude-code-action@v1.0.136
+        uses: anthropics/claude-code-action@v1
         with:
           prompt: |
             REPO: ${{ github.repository }}
